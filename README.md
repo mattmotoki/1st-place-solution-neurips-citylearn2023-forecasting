@@ -17,6 +17,7 @@ Simple models are well-suited for addressing both of these challenges. In partic
 
 ## Seasonal Average
 The batch formula for calculating an average of $n$ data points is $\bar{x}_n = \frac{1}{n} \sum_{k=1}^n x_k$. However, this is computationally inefficient and requires us to keep track of the entire $n$ data points. The online formula for the average can be written as follows
+
 $$
     \begin{align*}
     \bar{x}_n 
@@ -24,6 +25,7 @@ $$
         = \bar{x}_{n-1} + \frac{1}{n} \cdot \underbrace{ (x_n - \bar{x}_{n-1})}_{\text{update}}
     \end{align*}    
 $$
+
 Thus, to calculate the average of we only need to store the previous average $\bar{x}_{n-1}$ and the count $n$.  
 
 The seasonal average simply keeps track of 24 averages, one for each hour of the day (or 168 averages, one for each hour of the week). 
@@ -36,6 +38,7 @@ There are a few simple improvements that can be made:
 
 ### Better Initialization
 The sample average has high variance when $n$ is small. If we had some prior estimate $x_0$ for what the average should be, we could bias the average to be closer to the prior estimate using the following formula:
+
 $$
 \begin{align*}
 \tilde{x}_n 
@@ -44,6 +47,7 @@ $$
     &= \frac{n}{n + \tau} \cdot \bar{x}_{n} + \frac{\tau}{n + \tau} \cdot x_0
 \end{align*}
 $$
+
 where $\tau$ is the weight on the prior. The last line shows that the biased sample average is convex combination of the regular sample average $\bar{x}$ and the prior estimate $x_0$. The weight on the prior is large when $\tau$ is large or $n$ is small. As $n$ increases, the biased sample average converges to $\bar{x}$. In this competition, prior estimates could be derived from the building metadata. 
 
 ### Filtering Out Large Values
@@ -53,9 +57,11 @@ The domestic hot water heating (DHW) load and the electrical equipment (EEP) loa
 
 ### Blending with the Most Recent Observation
 Some of the load-types exhibited a high degree of autocorrelation. A simple way to improve the averages is to correct the level of the forecast using the following fomula
+
 $$
 \hat{x}_{n+h} = \bar{x}_{n+h} + \alpha^h (x_n - \bar{x}_{n})
 $$
+
 where $h$ is the horizon and $\alpha$ is the blending weight (roughly $0.93$). The following figure shows how this simple correction can improve the forecasts. 
 
 ![blend-with-most-recent](images/blend-with-most-recent.png)
