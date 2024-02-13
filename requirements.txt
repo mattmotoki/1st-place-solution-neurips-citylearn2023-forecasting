@@ -1,0 +1,3 @@
+CityLearn==2.1b9
+numpy
+tqdm==4.66.1
